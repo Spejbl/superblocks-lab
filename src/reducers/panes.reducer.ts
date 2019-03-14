@@ -34,7 +34,7 @@ export default function panesReducer(state = initialState, action: AnyAction) {
             if (itemIndex >= 0) {
                 items[itemIndex] = { ...items[itemIndex], active: true };
             } else {
-                items.unshift({ file: action.data, active: true, hasUnsavedChanges: false });
+                items.unshift({ file: action.data, active: true, hasUnsavedChanges: false, unSavedCode: '' });
             }
             return {
                 ...state,
@@ -93,7 +93,7 @@ export default function panesReducer(state = initialState, action: AnyAction) {
                 items: replaceInArray(
                     state.items,
                     p => p.file.id === action.data.fileId,
-                    p => ({ ...p, hasUnsavedChanges: false, file: { ...p.file, code: action.data.code } })
+                    p => ({ ...p, hasUnsavedChanges: false, unSavedCode: '', file: { ...p.file, code: action.data.code } })
                 )
             };
         }
@@ -104,7 +104,7 @@ export default function panesReducer(state = initialState, action: AnyAction) {
                 items: replaceInArray(
                     state.items,
                     p => p.file.id === action.data.fileId,
-                    p => ({ ...p, hasUnsavedChanges: action.data.hasUnsavedChanges })
+                    p => ({ ...p, hasUnsavedChanges: action.data.hasUnsavedChanges, unSavedCode: action.data.unSavedCode })
                 )
             };
 

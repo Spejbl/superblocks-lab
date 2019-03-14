@@ -16,48 +16,50 @@
 
 import React from 'react';
 import { SubMenu, MenuItem, Divider } from '../../common/menu';
-import { Panels } from '../../../models/state';
+import { Panels, IPane } from '../../../models/state';
 import style from './style.less';
 import { ProjectItemTypes } from '../../../models';
 
 interface IProps {
-  showTransactionsHistory: boolean;
-  showFileSystem: boolean;
-  showPreview: boolean;
-  showConsole: boolean;
-  activePaneId: string;
-  rootFolderId: string;
-  togglePanel: (panel: any) => void;
-  closeAllPanels: () => void;
-  closeAllPanes: () => void;
-  closePane: (fileId: string) => void;
-  onCreateItem: (parentId: string, type: ProjectItemTypes, name: string) => void;
+    showTransactionsHistory: boolean;
+    showFileSystem: boolean;
+    showPreview: boolean;
+    showConsole: boolean;
+    activePaneId: string;
+    panes: IPane[];
+    rootFolderId: string;
+    togglePanel: (panel: any) => void;
+    closeAllPanels: () => void;
+    closeAllPanes: () => void;
+    closePane: (fileId: string) => void;
+    onCreateItem: (parentId: string, type: ProjectItemTypes, name: string) => void;
+    onSaveFile: (fileId: string, code: string) => void;
 }
 
 export default class MenuDropdownDialog extends React.Component<IProps> {
 
     toggleFullScreen = () => {
-      const document: any = window.document;
-      const Element: any = document.Element;
+        const document: any = window.document;
+        const Element: any = document.Element;
 
-      if ((document.fullScreenElement && document.fullScreenElement !== null) ||
-       (!document.mozFullScreen && !document.webkitIsFullScreen)) {
-        if (document.documentElement.requestFullScreen) {
-          document.documentElement.requestFullScreen();
-        } else if (document.documentElement.mozRequestFullScreen) {
-          document.documentElement.mozRequestFullScreen();
-        } else if (document.documentElement.webkitRequestFullScreen) {
-          document.documentElement.webkitRequestFullScreen(Element.ALLOW_KEYBOARD_INPUT);
+        if ((document.fullScreenElement && document.fullScreenElement !== null) ||
+            (!document.mozFullScreen && !document.webkitIsFullScreen)) {
+                if (document.documentElement.requestFullScreen) {
+                    document.documentElement.requestFullScreen();
+                } else if (document.documentElement.mozRequestFullScreen) {
+                    document.documentElement.mozRequestFullScreen();
+                } else if (document.documentElement.webkitRequestFullScreen) {
+                    document.documentElement.webkitRequestFullScreen(Element.ALLOW_KEYBOARD_INPUT);
+                }
+        } else {
+            if (document.cancelFullScreen) {
+                document.cancelFullScreen();
+            } else if (document.mozCancelFullScreen) {
+                document.mozCancelFullScreen();
+            } else if (document.webkitCancelFullScreen) {
+                document.webkitCancelFullScreen();
+            }
         }
-      } else {
-        if (document.cancelFullScreen) {
-          document.cancelFullScreen();
-        } else if (document.mozCancelFullScreen) {
-          document.mozCancelFullScreen();
-        } else if (document.webkitCancelFullScreen) {
-          document.webkitCancelFullScreen();
-        }
-      }
     }
 
     onCreateItem = (parentId: string, type: ProjectItemTypes) => {
@@ -67,9 +69,39 @@ export default class MenuDropdownDialog extends React.Component<IProps> {
         }
     }
 
+    getActivePane = () => {
+        return this.props.panes.find((pane: IPane) => pane.file.id === this.props.activePaneId);
+    }
+
+    handleSaveFile = () => {
+        const { onSaveFile } = this.props;
+        const activePane = this.getActivePane();
+
+        if (activePane) {
+            onSaveFile(activePane.file.id, activePane.unSavedCode);
+        }
+    }
+
+    handleSaveAllFiles = () => {
+        this.props.panes.forEach((pane) => {
+            if (pane.hasUnsavedChanges) {
+                this.props.onSaveFile(pane.file.id, pane.unSavedCode);
+            }
+        });
+    }
+
+    /**
+     * @returns {Boolean} If any of the files in the project has unsaved changes
+     */
+    hasUnsavedChanges = () => {
+        return this.props.panes.some((pane) => pane.hasUnsavedChanges);
+    }
+
     render() {
         const { showTransactionsHistory, showFileSystem, showPreview, showConsole,
-                togglePanel, closeAllPanels, closeAllPanes, closePane, activePaneId, rootFolderId } = this.props;
+                togglePanel, closeAllPanels, closeAllPanes, closePane, rootFolderId, activePaneId } = this.props;
+        const activePane = this.getActivePane();
+        const hasUnsavedChanges = this.hasUnsavedChanges();
 
         return (
             <div className={style.menuDialog}>
@@ -78,15 +110,15 @@ export default class MenuDropdownDialog extends React.Component<IProps> {
                     <MenuItem title='New File' onClick={() => this.onCreateItem(rootFolderId, ProjectItemTypes.File)} />
                     <MenuItem title='New Folder' onClick={() => this.onCreateItem(rootFolderId, ProjectItemTypes.Folder)}  />
                     <Divider />
-                    <MenuItem title='Save' onClick={() => console.log('TODO')} />
-                    <MenuItem title='Save All' onClick={() => console.log('TODO')} />
+                    <MenuItem onClick={() => this.handleSaveFile()} disabled={activePane ? !activePane.hasUnsavedChanges : true} title='Save' description='Ctrl+S' />
+                    <MenuItem onClick={() => this.handleSaveAllFiles()} disabled={!hasUnsavedChanges} title='Save All' />
                     <Divider />
                     <MenuItem onClick={() => closePane(activePaneId)} disabled={!activePaneId} title='Close File' />
                     <MenuItem onClick={() => closeAllPanes()} disabled={!activePaneId} title='Close All Files' />
                     <Divider />
-                    <MenuItem title='Configure Project' onClick={() => console.log('TODO')} />
-                    <MenuItem title='Export Project' onClick={() => console.log('TODO')} />
-                    <MenuItem title='Download Project' onClick={() => console.log('TODO')} />
+                    <MenuItem onClick={() => console.log('TODO')} title='Configure Project' />
+                    <MenuItem onClick={() => console.log('TODO')} title='Export Project' />
+                    <MenuItem onClick={() => console.log('TODO')} title='Download Project' />
                 </SubMenu>
                 <SubMenu title='View'>
                     <MenuItem onClick={() => togglePanel(Panels.Explorer)} isActive={showFileSystem} title='Explorer' />

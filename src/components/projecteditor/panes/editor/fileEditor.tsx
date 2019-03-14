@@ -26,13 +26,17 @@ interface IProps {
     file: IProjectItem;
     visible: boolean;
     hasUnsavedChanges: boolean;
+    unSavedCode: string;
     onSave: (fileId: string, code: string) => void;
     onCompile: (file: IProjectItem) => void;
     onDeploy: (file: IProjectItem) => void;
     onInteract: (file: IProjectItem) => void;
     onConfigure: (file: IProjectItem) => void;
-    onUnsavedChange: (fileId: string, hasUnsavedChanges: boolean) => void;
+    onUnsavedChange: (fileId: string, hasUnsavedChanges: boolean, unSavedCode: string) => void;
 }
+
+// Timeout for onChange in editor so we don't dispatch actions too often
+const WAIT_INTERVAL: number = 500;
 
 const langmap: any = {
     js: 'javascript',
@@ -51,6 +55,7 @@ export class FileEditor extends React.Component<IProps> {
     language: string = '';
     options: any = {};
     code: string = '';
+    timer: any;
 
     constructor(props: IProps) {
         super(props);
@@ -85,17 +90,24 @@ export class FileEditor extends React.Component<IProps> {
         }
     }
 
+    componentWillMount() {
+        this.timer = null;
+    }
+
     editorDidMount = (editor: any, monacoObj: any) => {
         editor.addCommand(monacoObj.KeyMod.CtrlCmd | monacoObj.KeyCode.KEY_S, this.onSave);
         editor.focus();
     }
 
     onFileChange = (value: string) => {
+        clearTimeout(this.timer);
+        this.timer = setTimeout(() => this.handleFileChange(value), WAIT_INTERVAL);
+    }
+
+    handleFileChange = (value: string) => {
         this.code = value;
         const hasUnsavedChanges = this.code !== this.props.file.code;
-        if (hasUnsavedChanges !== this.props.hasUnsavedChanges) { // small optimization to have cleaner redux log
-            this.props.onUnsavedChange(this.props.file.id, hasUnsavedChanges);
-        }
+        this.props.onUnsavedChange(this.props.file.id, hasUnsavedChanges, this.code);
     }
 
     onSave = () => {

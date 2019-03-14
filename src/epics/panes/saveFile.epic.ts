@@ -14,7 +14,7 @@
 // You should have received a copy of the GNU General Public License
 // along with Superblocks Lab.  If not, see <http://www.gnu.org/licenses/>.
 
-import { switchMap, map, catchError } from 'rxjs/operators';
+import {  map, catchError, mergeMap } from 'rxjs/operators';
 import { ofType, Epic } from 'redux-observable';
 import { panesActions } from '../../actions';
 import { projectSelectors } from '../../selectors';
@@ -22,7 +22,7 @@ import { projectService } from '../../services';
 
 export const saveFileEpic: Epic = (action$, state$) => action$.pipe(
     ofType(panesActions.SAVE_FILE),
-    switchMap((action) => {
+    mergeMap((action) => {
         const project = projectSelectors.getProject(state$.value);
         const explorerState = state$.value.explorer;
         // TODO: this should be remove when save by file is implem

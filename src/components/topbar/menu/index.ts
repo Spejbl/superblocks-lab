@@ -26,7 +26,8 @@ const mapStateToProps = (state: any) => ({
     showFileSystem: panelsSelectors.getShowFileSystem(state),
     showPreview: panelsSelectors.getShowPreview(state),
     showConsole: panelsSelectors.getShowConsole(state),
-    activePaneId: panesSelectors.getActivePane(state),
+    activePaneId: panesSelectors.getActivePaneId(state),
+    panes: panesSelectors.getPanes(state),
     rootFolderId: explorerSelectors.getRootFolderId(state),
 });
 
@@ -46,6 +47,9 @@ function mapDispatchToProps(dispatch: Dispatch) {
         },
         closePane(fileId: string) {
             dispatch(panesActions.closePane(fileId));
+        },
+        onSaveFile(fileId: string, code: string) {
+            dispatch(panesActions.saveFile(fileId, code));
         },
     };
 }

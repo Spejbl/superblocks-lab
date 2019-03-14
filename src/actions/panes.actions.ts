@@ -65,10 +65,10 @@ export const panesActions = {
     },
 
     SET_UNSAVED_CHANGES: 'SET_UNSAVED_CHANGES',
-    setUnsavedChanges(fileId: string, hasUnsavedChanges: boolean) {
+    setUnsavedChanges(fileId: string, hasUnsavedChanges: boolean, unSavedCode: string) {
         return {
             type: panesActions.SET_UNSAVED_CHANGES,
-            data: { fileId, hasUnsavedChanges }
+            data: { fileId, hasUnsavedChanges, unSavedCode }
         };
     }
 };

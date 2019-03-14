@@ -20,6 +20,7 @@ export interface IPane {
     file: IProjectItem;
     active: boolean;
     hasUnsavedChanges: boolean;
+    unSavedCode: string;
 }
 
 export interface IPanesState {

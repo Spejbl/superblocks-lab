@@ -36,7 +36,7 @@ interface IProps {
     onDeployContract: (file: IProjectItem) => void;
     onInteractContract: (file: IProjectItem) => void;
 
-    onUnsavedChange: (fileId: string, hasUnsavedChanges: boolean) => void;
+    onUnsavedChange: (fileId: string, hasUnsavedChanges: boolean, unSavedCode: string) => void;
 }
 
 export function Panes(props: IProps) {
@@ -57,6 +57,7 @@ export function Panes(props: IProps) {
                         file={pane.file}
                         visible={pane.active}
                         hasUnsavedChanges={pane.hasUnsavedChanges}
+                        unSavedCode={pane.unSavedCode}
                         onSave={props.onSaveFile}
                         onConfigure={props.onConfigureContract}
                         onCompile={props.onCompileContract}
