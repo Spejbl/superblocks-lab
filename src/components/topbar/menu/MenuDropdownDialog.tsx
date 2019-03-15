@@ -18,7 +18,7 @@ import React from 'react';
 import { SubMenu, MenuItem, Divider } from '../../common/menu';
 import { Panels, IPane } from '../../../models/state';
 import style from './style.less';
-import { ProjectItemTypes } from '../../../models';
+import { ProjectItemTypes, IProject } from '../../../models';
 
 interface IProps {
     showTransactionsHistory: boolean;
@@ -28,12 +28,14 @@ interface IProps {
     activePaneId: string;
     panes: IPane[];
     rootFolderId: string;
+    project: IProject;
     togglePanel: (panel: any) => void;
     closeAllPanels: () => void;
     closeAllPanes: () => void;
     closePane: (fileId: string) => void;
     onCreateItem: (parentId: string, type: ProjectItemTypes, name: string) => void;
     onSaveFile: (fileId: string, code: string) => void;
+    showModal: (modalType: string, modalProps: any) => void;
 }
 
 export default class MenuDropdownDialog extends React.Component<IProps> {
@@ -98,8 +100,8 @@ export default class MenuDropdownDialog extends React.Component<IProps> {
     }
 
     render() {
-        const { showTransactionsHistory, showFileSystem, showPreview, showConsole,
-                togglePanel, closeAllPanels, closeAllPanes, closePane, rootFolderId, activePaneId } = this.props;
+        const { showTransactionsHistory, showFileSystem, showPreview, showConsole, showModal,
+                togglePanel, closeAllPanels, closeAllPanes, closePane, rootFolderId, activePaneId, project } = this.props;
         const activePane = this.getActivePane();
         const hasUnsavedChanges = this.hasUnsavedChanges();
 
@@ -116,7 +118,7 @@ export default class MenuDropdownDialog extends React.Component<IProps> {
                     <MenuItem onClick={() => closePane(activePaneId)} disabled={!activePaneId} title='Close File' />
                     <MenuItem onClick={() => closeAllPanes()} disabled={!activePaneId} title='Close All Files' />
                     <Divider />
-                    <MenuItem onClick={() => console.log('TODO')} title='Configure Project' />
+                    <MenuItem onClick={() => showModal('EDIT_MODAL', {project})} title='Configure Project' />
                     <MenuItem onClick={() => console.log('TODO')} title='Export Project' />
                     <MenuItem onClick={() => console.log('TODO')} title='Download Project' />
                 </SubMenu>

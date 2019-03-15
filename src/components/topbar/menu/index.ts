@@ -17,8 +17,8 @@
 import { Dispatch } from 'redux';
 import { connect } from 'react-redux';
 import MenuDropdownDialog from './MenuDropdownDialog';
-import { panelsSelectors, panesSelectors, explorerSelectors } from '../../../selectors';
-import { panelsActions, panesActions, explorerActions } from '../../../actions';
+import { panelsSelectors, panesSelectors, explorerSelectors, projectSelectors } from '../../../selectors';
+import { panelsActions, panesActions, explorerActions, modalActions } from '../../../actions';
 import { ProjectItemTypes } from '../../../models';
 
 const mapStateToProps = (state: any) => ({
@@ -29,6 +29,7 @@ const mapStateToProps = (state: any) => ({
     activePaneId: panesSelectors.getActivePaneId(state),
     panes: panesSelectors.getPanes(state),
     rootFolderId: explorerSelectors.getRootFolderId(state),
+    project: projectSelectors.getProject(state),
 });
 
 function mapDispatchToProps(dispatch: Dispatch) {
@@ -50,6 +51,9 @@ function mapDispatchToProps(dispatch: Dispatch) {
         },
         onSaveFile(fileId: string, code: string) {
             dispatch(panesActions.saveFile(fileId, code));
+        },
+        showModal: (modalType: string, modalProps: any) => {
+            dispatch(modalActions.showModal(modalType, modalProps));
         },
     };
 }
