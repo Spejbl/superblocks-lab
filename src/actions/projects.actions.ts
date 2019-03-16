@@ -185,19 +185,42 @@ export const projectsActions = {
         };
     },
 
-     // ---------- CREATE_EMPTY_PROJECT ----------
-     CREATE_EMPTY_PROJECT: 'CREATE_EMPTY_PROJECT',
-     createEmptyProject(redirect: boolean) {
-         return {
-             type: projectsActions.CREATE_EMPTY_PROJECT,
-             data: { redirect }
-         };
-     },
+    // ---------- CREATE_EMPTY_PROJECT ----------
+    CREATE_EMPTY_PROJECT: 'CREATE_EMPTY_PROJECT',
+    createEmptyProject(redirect: boolean) {
+        return {
+            type: projectsActions.CREATE_EMPTY_PROJECT,
+            data: { redirect }
+        };
+    },
 
-     CREATE_PROJECT_SUCCESS: 'CREATE_PROJECT_SUCCESS',
-     createProjectSuccess() {
-         return {
-             type: projectsActions.CREATE_PROJECT_SUCCESS,
-         };
-     }
+    CREATE_PROJECT_SUCCESS: 'CREATE_PROJECT_SUCCESS',
+    createProjectSuccess() {
+        return {
+            type: projectsActions.CREATE_PROJECT_SUCCESS,
+        };
+    },
+
+    // ---------- EXPORT_PROJECT ----------
+    EXPORT_PROJECT: 'EXPORT_PROJECT',
+    exportProject() {
+        return {
+            type: projectsActions.EXPORT_PROJECT,
+        };
+    },
+
+    EXPORT_PROJECT_SUCCESS: 'EXPORT_PROJECT_SUCCESS',
+    exportProjectSuccess() {
+        return {
+            type: projectsActions.EXPORT_PROJECT_SUCCESS,
+        };
+    },
+
+    EXPORT_PROJECT_FAIL: 'EXPORT_PROJECT_FAIL',
+    exportProjectFail(error: string) {
+        return {
+            type: projectsActions.EXPORT_PROJECT_FAIL,
+            data: { error }
+        };
+    }
 };

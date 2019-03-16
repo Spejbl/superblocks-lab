@@ -18,7 +18,7 @@ import { Dispatch } from 'redux';
 import { connect } from 'react-redux';
 import MenuDropdownDialog from './MenuDropdownDialog';
 import { panelsSelectors, panesSelectors, explorerSelectors, projectSelectors } from '../../../selectors';
-import { panelsActions, panesActions, explorerActions, modalActions } from '../../../actions';
+import { panelsActions, panesActions, explorerActions, modalActions, projectsActions } from '../../../actions';
 import { ProjectItemTypes } from '../../../models';
 
 const mapStateToProps = (state: any) => ({
@@ -54,6 +54,9 @@ function mapDispatchToProps(dispatch: Dispatch) {
         },
         showModal: (modalType: string, modalProps: any) => {
             dispatch(modalActions.showModal(modalType, modalProps));
+        },
+        exportProject: () => {
+            dispatch(projectsActions.exportProject());
         },
     };
 }
